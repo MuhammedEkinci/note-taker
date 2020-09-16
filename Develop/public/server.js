@@ -48,12 +48,25 @@ fs.readFile("db/db.json", "utf-8", (err,data) => {
                 return note.id != req.params.id;
             }
         )
-         updateDb();
+         renderDB();
          res.send('successful!');
          console.log("Deleted note with ID of "+req.params.id);
      });
 
+    //============================//
     app.get("*", function(req, res) {
         res.sendFile(path.join(__dirname, "index.html"));
     });
+
+    app.get('/notes', function(req,res) {
+        res.sendFile(path.join(__dirname, "notes.html"));
+    });
+
+     function renderDB() {
+        fs.writeFile("Develop/db/db.json",JSON.stringify(notes),err => {
+            if (err) throw err;
+                
+            return true;      
+        });
+     }
 });
