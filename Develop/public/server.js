@@ -17,4 +17,43 @@ app.listen(PORT, function() {
 });
 
 //====setup the notes for note taker====//
-fs.readFile("")
+fs.readFile("db/db.json", "utf-8", (err,data) => {
+
+    if(err) throw err;
+
+    let notes = JSON.parse(data);
+
+    //=====routes=====//
+    app.get("/api/notes", function(req, res) {
+        res.json(notes);
+    });
+
+    //notes will then be sent to db.json
+    app.post("/api/notes/:id", function(req, res) {
+        let newNotes = req.body;
+        newNotes.id = uniqid()
+        notes.push(newNotes);
+        renderDB();
+        res.send("saved new notes!");
+        return console.log("Added new notes:" + newNotes.title);
+    });
+
+    app.get("/api/notes/:id", function(req,res) {
+        res.json(notes[req.params.id]);
+    });
+
+    app.delete("/api/notes/:id", function(req, res) {
+        notes = notes.filter(
+            note => {
+                return note.id != req.params.id;
+            }
+        )
+         updateDb();
+         res.send('successful!');
+         console.log("Deleted note with ID of "+req.params.id);
+     });
+
+    app.get("*", function(req, res) {
+        res.sendFile(path.join(__dirname, "index.html"));
+    });
+});
