@@ -22,3 +22,48 @@ app.get('/', (req, res) => {
 app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "public/notes.html"))
 });
+
+//gets notes from db.json
+app.get("/api/notes", function (req, res) {
+    res.sendFile(path.join(__dirname, "db/db.json"))
+});
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.post("/api/notes", function (req, res) {
+    var newNote = req.body;
+
+    //get the saved data
+    var noteArray = JSON.parse(fs.readFileSync(path.join(__dirname, "db/db.json")));
+    noteArray.push(newNote);
+
+    var reformattedData = JSON.stringify(noteArray);
+    fs.writeFileSync(path.join(__dirname, "db/db.json"), reformattedData);
+
+    //the actual contents of the responce doesn't matter in this case
+    //it just needs a responce so the function's Promises will run
+    res.send("Success");
+});
+
+app.delete("/delete/note/:id", function (req, res) {
+    let id = req.params.id;
+    
+    var noteArray = JSON.parse(fs.readFileSync(path.join(__dirname, "db/db.json")));
+
+    //creates a new note array of every note, except the one that's being deleted
+    noteArray = noteArray.filter((value) => { 
+        if(value.id != id){
+            return value;
+        }
+    });
+
+    var reformattedData = JSON.stringify(noteArray);
+    fs.writeFileSync(path.join(__dirname, "db/db.json"), reformattedData);
+
+    //the actual contents of the responce doesn't matter in this case
+    //it just needs a responce so the function's Promises will run
+    res.send("Success");
+});
+
