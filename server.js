@@ -47,7 +47,7 @@ app.post("/api/notes", function (req, res) {
     res.send("Success");
 });
 
-app.delete("/delete/note/:id", function (req, res) {
+app.delete("/api/note/:id", function (req, res) {
     let id = req.params.id;
     
     var noteArray = JSON.parse(fs.readFileSync(path.join(__dirname, "db/db.json")));
@@ -62,8 +62,6 @@ app.delete("/delete/note/:id", function (req, res) {
     var reformattedData = JSON.stringify(noteArray);
     fs.writeFileSync(path.join(__dirname, "db/db.json"), reformattedData);
 
-    //the actual contents of the responce doesn't matter in this case
-    //it just needs a responce so the function's Promises will run
     res.send("Success");
 });
 
